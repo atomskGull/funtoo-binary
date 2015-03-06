@@ -154,7 +154,7 @@ def chroot():
     os.system('echo \'MAKE_OPTS="%s"\' >> /etc/portage/make.conf' % proc)
     sources = raw_input('%sWhat kernel sources does your target machine have? [vanilla-sources/gentoo-sources]%s ' % (color.Bold, color.End))
     subprocess.call(['emerge', sources])
-    subprocess.call(['mv', '/config', '/usr/src/linux'])
+    subprocess.call(['mv', '/config', '/usr/src/linux/.config'])
     print '%sBuilding kernel...%s' % (color.Bold, color.End)
     os.chdir('/usr/src/linux')
     subprocess.call(['make', 'silentoldconfig'])
