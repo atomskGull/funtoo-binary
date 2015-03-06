@@ -1,6 +1,6 @@
-* *Name*: Fun-Bin
-* *Author*: anakin <anakin@nightprojects.org> | <anak1n@funtoo.org>
-* *Description*: Creating an isolated environment for building binary packages for Funtoo.
+* **Name**: Fun-Bin
+* **Author**: anakin <anakin@nightprojects.org> | <anak1n@funtoo.org>
+* **Description**: Creating an isolated environment for building binary packages for Funtoo.
 
 -----------------------------------------------------------------------------------------------------------
 
