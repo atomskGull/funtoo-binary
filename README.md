@@ -1,8 +1,8 @@
-Name: Fun-Bin
+* *Name*: Fun-Bin
+* *Author*: anakin <anakin@nightprojects.org> | <anak1n@funtoo.org>
+* *Description*: Creating an isolated environment for building binary packages for Funtoo.
 
-Author: anakin <anakin@nightprojects.org> | <anak1n@funtoo.org>
-
-Description: Creating an isolated environment for building binary packages for Funtoo.
+-----------------------------------------------------------------------------------------------------------
 
 ##What does it do exactly?
 I, for one, find it more convenient to build the source packages on a build server with `FEATURES="buildpkg"` and then pull the binaries from the build server. It allows for fast installation on target machines, where the host of this program will build all of them. What it does is creates an isolated environment with a chroot, builds a kernel based on your target machine, builds packages and updates once a week via a cronjob. 
