@@ -6,6 +6,7 @@ import sys
 import subprocess
 from urllib2 import urlopen
 
+
 class color:
     Red = '\033[91m'
     Blue = '\033[94m'
@@ -27,7 +28,7 @@ else:
 
 stage86athlon = 'http://build.funtoo.org/funtoo-current/x86-32bit/athlon-xp/stage3-latest.tar.xz'
 stage86generic = 'http://build.funtoo.org/funtoo-current/x86-32bit/generic_32/stage3-latest.tar.xz'
-stage86i686 ='http://build.funtoo.org/funtoo-current/x86-32bit/i686/stage3-latest.tar.xz'
+stage86i686 = 'http://build.funtoo.org/funtoo-current/x86-32bit/i686/stage3-latest.tar.xz'
 stage86pentium = 'http://build.funtoo.org/funtoo-current/x86-32bit/pentium4/stage3-latest.tar.xz'
 
 stage64bulldozer = 'http://build.funtoo.org/funtoo-current/x86-64bit/amd64-bulldozer/stage3-latest.tar.xz'
@@ -58,14 +59,17 @@ def stages(stage):
 
         file_size_dl += len(buffer)
         f.write(buffer)
-        status = r"%10d [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
-        status = status + chr(8)*(len(status)+1)
+        status = r"%10d [%3.2f%%]" % (
+            file_size_dl, file_size_dl * 100. / file_size)
+        status = status + chr(8) * (len(status) + 1)
         print status,
 
     f.close()
     print ' '
 
-dir = raw_input('%sPath to base environment directory: [%s/root/env/laptop-32bit%s%s]: %s' % (color.Bold, color.Blue, color.End, color.Bold, color.End))
+dir = raw_input('%sPath to base environment directory: [%s/root/env/laptop-32bit%s%s]: %s' % (
+    color.Bold, color.Blue, color.End, color.Bold, color.End))
+
 
 def env():
     subprocess.call(['install', '-d', dir])
@@ -75,34 +79,38 @@ def env():
     print '%sSuccessfully changed directories to:%s %s' % (color.Bold, color.End, dir)
     subprocess.call(['sleep', '1'])
 
+
 def tarball():
-    print '%sArchitecture is 64bit or 32bit.%s' % (color.Bold, color.End)
-    print '%s%sMicroarchiecture for 32bit are: %s' % (color.Bold, color.Blue, color.End)
-    print 'athlon-xp'
-    print 'generic'
-    print 'i686'
-    print 'pentium'
-    print '-----------------------------------------------------'
-    print '%s%sMicroarchitectures for 64bit are: %s' % (color.Bold, color.Blue, color.End)
-    print 'bulldozer'
-    print 'k10'
-    print 'k8'
-    print 'piledriver'
-    print 'steamroller'
-    print 'core2'
-    print 'corei7'
-    print 'generic'
-    print 'haswell'
-    print 'ivybridge'
-    print '-----------------------------------------------------'
-    print '%sPlease consult http://www.funtoo.org/Subarches to find more information on what microarchitecture you should use.' % color.Bold
-    print 'State your answer as "arch microarch" so the script will pull the right stage'
-    print 'Example: 64bit corei7%s' % color.End
-    print '-----------------------------------------------------'
-    print '%s%sThe arch and microarch needs to match your target machine, if you use a 64bit corei7 stage3 on your target machine, you must use a 64bit corei7 stage3 to build the packages.%s' % (color.Bold, color.Red, color.End)
-    print '-----------------------------------------------------'
+    print '''
+%sArchitecture is 64bit or 32bit.%s
+%s%sMicroarchiecture for 32bit are: %s
+athlon-xp
+generic
+i686
+pentium
+-----------------------------------------------------
+%s%sMicroarchitectures for 64bit are: %s
+bulldozer
+k10
+k8
+piledriver
+steamroller
+core2
+corei7
+generic
+haswell
+ivybridge
+-----------------------------------------------------
+%sPlease consult http://www.funtoo.org/Subarches to find more information on what microarchitecture you should use.
+State your answer as "arch microarch" so the script will pull the right stag
+Example: 64bit corei7%s
+-----------------------------------------------------
+%s%sThe arch and microarch needs to match your target machine, if you use a 64bit corei7 stage3 on your target machine, you must use a 64bit corei7 stage3 to build the packages.%s
+-----------------------------------------------------
+    ''' % (color.Bold, color.End, color.Bold, color.Blue, color.End, color.Bold, color.Blue, color.End, color.Bold, color.End, color.Bold, color.Red, color.End)
     raw_input('%sPlease press enter to continue%s' % (color.Bold, color.End))
-    stage = raw_input('%sWhat is your architecture and microarchitecture?%s ' % (color.Bold, color.End))
+    stage = raw_input('%sWhat is your architecture and microarchitecture?%s ' % (
+        color.Bold, color.End))
     if stage == '64bit corei7':
         stages(stage64corei7)
     elif stage == '64bit bulldozer':
@@ -136,6 +144,7 @@ def tarball():
         print '%sExample:%s 64bit corei7' % (color.Bold, color.End)
         sys.exit('Please re-run funbin')
 
+
 def chroot():
     print '%sPreparing to untar stage3 and chroot into:%s %s (This can take some time...)' % (color.Bold, color.End, dir)
     subprocess.call(['tar', '-xJpf', 'stage3-latest.tar.xz'])
@@ -143,16 +152,20 @@ def chroot():
     subprocess.call(['mount', '--bind', '/proc', 'proc'])
     subprocess.call(['mount', '--bind', '/dev', 'dev'])
     subprocess.call(['cp', '/etc/resolv.conf', 'etc'])
-    kernel = raw_input('%sPath to your kernel config: ex: [%s/root/files/kernel.config%s%s] %s' % (color.Bold, color.Blue, color.End, color.Bold, color.End))
+    kernel = raw_input('%sPath to your kernel config: ex: [%s/root/files/kernel.config%s%s] %s' % (
+        color.Bold, color.Blue, color.End, color.Bold, color.End))
     subprocess.call(['cp', kernel, '%s/config' % dir])
     os.chroot(dir)
     print '%sSyncing Funtoo Portage tree...%s' % (color.Bold, color.End)
     subprocess.call(['emerge', '--sync'])
-    os.system('echo \'EMERGE_DEFAULT_OPTS="--quiet-build=y --autounmask=n"\' >> /etc/portage/make.conf')
+    os.system(
+        'echo \'EMERGE_DEFAULT_OPTS="--quiet-build=y --autounmask=n"\' >> /etc/portage/make.conf')
     os.system('echo \'FEATURES="buildpkg"\' >> /etc/portage/make.conf')
-    proc = raw_input('%sHow many cores in your processor?%s ' % (color.Bold, color.End))
+    proc = raw_input('%sHow many cores in your processor?%s ' %
+                     (color.Bold, color.End))
     os.system('echo \'MAKE_OPTS="%s"\' >> /etc/portage/make.conf' % proc)
-    sources = raw_input('%sWhat kernel sources does your target machine have? [vanilla-sources/gentoo-sources]%s ' % (color.Bold, color.End))
+    sources = raw_input(
+        '%sWhat kernel sources does your target machine have? [vanilla-sources/gentoo-sources]%s ' % (color.Bold, color.End))
     subprocess.call(['emerge', sources])
     subprocess.call(['mv', '/config', '/usr/src/linux/.config'])
     print '%sBuilding kernel...%s' % (color.Bold, color.End)
@@ -163,16 +176,20 @@ def chroot():
     print '%sFinished...%s' % (color.Bold, color.End)
     print '%sEnvironment is ready for use!%s' % (color.Bold, color.End)
 
+
 def script():
-    script = raw_input('%sWould you like to create a script to take user input to build packages for you?%s ' % (color.Bold, color.End))
+    script = raw_input('%sWould you like to create a script to take user input to build packages for you?%s ' % (
+        color.Bold, color.End))
     if script == 'yes':
-        print '%sCreating script...%s' % (color.Bold, color.End) # placeholder more than anything
+        # placeholder more than anything
+        print '%sCreating script...%s' % (color.Bold, color.End)
     elif script == 'no':
         print '%sNot creating script%s' % (color.Bold, color.End)
         print '%sYou will need to manually chroot into your environment at %s and build the packages you would like%s' % (color.Bold, dir, color.End)
     else:
         print '%sDefaulting to not creating script.%s' % (color.Bold, color.End)
         print '%sYou will need to manually chroot into your environment at "%s" and build the packages you would like%s' % (color.Bold, dir, color.End)
+
 
 def run():
     env()
