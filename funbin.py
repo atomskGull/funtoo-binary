@@ -41,7 +41,7 @@ stage64corei7 = 'http://build.funtoo.org/funtoo-current/x86-64bit/corei7/stage3-
 stage64generic = 'http://build.funtoo.org/funtoo-current/x86-64bit/generic_64/stage3-latest.tar.xz'
 stage64haswell = 'http://build.funtoo.org/funtoo-current/x86-64bit/intel64-haswell/stage3-latest.tar.xz'
 stage64ivybridge = 'http://build.funtoo.org/funtoo-current/x86-64bit/intel64-ivybridge/stage3-latest.tar.xz'
-
+real_root = os.open('/', os.O_RDONLY)
 
 def stages(stage):
     file_name = stage.split('/')[-1]
@@ -176,26 +176,12 @@ def chroot():
     print '%sFinished...%s' % (color.Bold, color.End)
     print '%sEnvironment is ready for use!%s' % (color.Bold, color.End)
 
-
-def script():
-    script = raw_input('%sWould you like to create a script to take user input to build packages for you?%s ' % (
-        color.Bold, color.End))
-    if script == 'yes':
-        # placeholder more than anything
-        print '%sCreating script...%s' % (color.Bold, color.End)
-    elif script == 'no':
-        print '%sNot creating script%s' % (color.Bold, color.End)
-        print '%sYou will need to manually chroot into your environment at %s and build the packages you would like%s' % (color.Bold, dir, color.End)
-    else:
-        print '%sDefaulting to not creating script.%s' % (color.Bold, color.End)
-        print '%sYou will need to manually chroot into your environment at "%s" and build the packages you would like%s' % (color.Bold, dir, color.End)
-
-
 def run():
     env()
     tarball()
     chroot()
-    script()
+    os.fchdir(real_root)
+    os.chroot('.')
     subprocess.call(['umount', '%s/proc' % dir])
     subprocess.call(['umount', '%s/sys' % dir])
     subprocess.call(['umount', '%s/dev' % dir])
